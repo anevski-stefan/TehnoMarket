@@ -1,0 +1,57 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<div class="container d-flex mt-5 align-items-center">
+  <div class="leftcontainer" style="width: 50%;">
+    <div class="card text-center mx-2 my-2 w-75" style="width: 17rem;">
+        {% if product.image %}
+          <img src="{{MEDIA_URL}}{{product.image.url}}" class="card-img-top" alt="...">
+        {% else %}
+          <p class="d-flex justify-content-center align-items-center m-0">No image available.</p>
+        {% endif %}
+        {% if user.is_authenticated %}
+          {% if user.customuser.role is "Купувач" %}
+        <div class="card-body">
+          <form action="{% url 'add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-secondary m-2">Додади во кошничка</button>
+          </form>
+        </div>
+          {% endif %}
+        {% endif %}
+    </div>
+  </div>
+
+  <div class="rightcontainer d-flex flex-column justify-content-center lh-lg" style="width: 50%;">
+    <h3 class="fs-3 mb-2">{{product.name}}</h3>
+    <p class="m-0">{{product.category.name}}</p>
+    <p class="m-0"><span class="fs-5">На залиха:</span> {{product.stock}}</p>
+    <p class="m-0" id="desc">{{product.description}}</p>
+  </div>
+</div>
+<div class="container mt-5">
+  <div class="d-flex align-items-center justify-content-between align-content-center">
+    <h4>Коментари</h4>
+    {% if user.is_authenticated %}
+      <a class="btn btn-light" href="{% url 'addcomment' id=product.id %}">Напиши коментар</a>
+    {% else %}
+      <div class="d-flex flex-column justify-content-center">
+        <p class="text-light">Морате да бидете најавени за да оставите коментар.</p>
+        <a class="btn btn-light" href="/login" aria-disabled="true">Најави се</a>
+      </div>
+    {% endif %}
+  </div>
+  <div class="comments mt-3">
+    {% for comment in comments %}
+      <div class="comment-box d-flex">
+        <div class="right-part">
+          <p class="m-0">{{comment.content}}</p>
+          <p>Напишано од: <a href="{% url 'personalinfo' comment.author.username %}" class="text-light">{{comment.author}}</a> | {{comment.date_created}}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

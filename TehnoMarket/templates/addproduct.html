@@ -1,0 +1,62 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+<div class="container w-100 d-flex flex-column align-items-center justify-content-center" style="min-height: 120vh;">
+  <h3 id="product-heading" class="mb-0 mt-3">Додади нов производ</h3>
+  <div class="d-flex justify-content-center flex-column align-items-center position-relative">
+    <p id="image-preview-text" class="m-0" style="display: none;">Преглед на слика</p>
+    <div id="image-preview" class="mb-3 position-relative"></div>
+    <button id="close-button" class="btn btn-secondary position-absolute translate-middle rounded-circle" style="display: none; width: 30px; height: 30px; top: 23%; right: 1%;">
+      <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; line-height: 1;">&times;</span>
+    </button>
+  </div>
+  <div class="w-50 mt-3">
+    <form action="{% url 'addproduct' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{form}}
+      <div class="text-center">
+        <button class="btn btn-light mt-3">Додади</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function readImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        img.classList.add("img-thumbnail");
+        document.getElementById('image-preview').innerHTML = '';
+        document.getElementById('image-preview').appendChild(img);
+        document.getElementById('image-preview-text').style.display = 'block';
+        document.getElementById('close-button').style.display = 'block';
+        document.getElementById('product-heading').classList.add('mt-4');
+      }
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function closeImagePreview() {
+    document.getElementById('image-preview').innerHTML = '';
+    document.getElementById('image-preview-text').style.display = 'none';
+    document.getElementById('close-button').style.display = 'none';
+    document.getElementById('product-heading').classList.remove('mt-4');
+  }
+
+  var imageInput = document.getElementById('id_image');
+  var closeButton = document.getElementById('close-button');
+
+  imageInput.addEventListener('change', function() {
+    readImage(this);
+  });
+
+  closeButton.addEventListener('click', function() {
+    closeImagePreview();
+  });
+</script>
+{% endblock %}

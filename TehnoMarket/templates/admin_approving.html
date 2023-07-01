@@ -1,0 +1,26 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<h3 class="text-center my-4">Продукти кои чекаат да бидат одобрени</h3>
+<div class="container d-flex flex-wrap justify-content-center">
+{% if products %}
+{% for product in products %}
+    {% if not product.is_approved %}
+        <div class="card w-25 m-3" style="width: 18rem;">
+            {% if product.image %}
+                <img src="{{ MEDIAURL }}{{ product.image.url }}" class="card-img-top w-100 h-100" alt="...">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|slice:":50" }}{% if product.description|length > 50 %}...{% endif %}</p>
+                <a href="{% url 'approve_product' product_id=product.id %}" class="btn btn-success">Approve</a>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% else %}
+    <p>Нема продукти за прикажување</p>
+{% endif %}
+</div>
+{% endblock %}

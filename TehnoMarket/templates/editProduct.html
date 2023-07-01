@@ -1,0 +1,51 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<div class="container d-flex mt-5">
+  <div class="leftcontainer" style="width: 30%;">
+    <div style="width: 17rem;" class="d-flex flex-column align-items-center">
+        {% if product.image %}
+          <div class="d-flex flex-column">
+            <img src="{{ MEDIA_URL }}{{ product.image.url }}" class="card-img-top h-100" alt="...">
+          </div>
+        {% else %}
+            <p>No image available</p>
+        {% endif %}
+
+        <form action="{% url 'edit_product_image' id=product.id %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="image" class="form-label">Change Image:</label>
+            <input type="file" class="form-control" id="image" name="image">
+          </div>
+          <div class="w-100 d-flex justify-content-center">
+            <button class="btn btn-light mt-3">Save Image</button>
+          </div>
+        </form>
+    </div>
+  </div>
+
+  <div class="rightcontainer d-flex flex-column justify-content-center" style="width: 70%;">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="name" class="form-label">Име на производот:</label>
+        <input type="text" class="form-control" id="name" value="{{ product.name }}" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="stock" class="form-label">На залиха:</label>
+        <input type="number" class="form-control" id="stock" value="{{ product.stock }}" name="stock">
+      </div>
+      <div class="mb-3">
+        <label for="desc" class="form-label">Опис на производот:</label>
+        <textarea class="form-control" id="desc" name="desc">{{ product.description }}</textarea>
+      </div>
+      <div class="w-100 d-flex justify-content-center">
+        <button class="btn btn-light mt-3">Измени</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

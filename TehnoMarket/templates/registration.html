@@ -1,0 +1,26 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<div class="container w-100 d-flex flex-column align-items-center justify-content-center" style="height: 120vh; margin-top: 50px;">
+    {% if username_taken %}
+        <div class="alert alert-danger">Корисничкото име е веќе зафатено. Пробајте со друго корисничко име.</div>
+    {% endif %}
+    <h2>Регистрација</h2>
+    <form action="{% url 'register' %}" method="POST" class="w-50">
+        {% csrf_token %}
+        {{form.as_p}}
+        <label for="role">Тип на корисник:</label>
+        <select name="role" id="role" class="form-control">
+            {% for role in roles %}
+                <option value="{{role.role}}">{{role.role}}</option>
+            {% endfor %}
+        </select>
+        <p>Доколку имаш профил, можеш да се најавиш на <a href="/login/" class="text-dark">овој линк</a></p>
+        <div class="w-100 d-flex justify-content-center">
+            <button class="btn btn-light">Регистрирај се</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

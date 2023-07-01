@@ -1,0 +1,121 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<div class="container">
+    {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+          {% if message.tags == 'error-type' %} class="{{ message.tags }}"{% endif %}{{ message }}
+        </div>
+    {% endfor %}
+</div>
+<div class="container d-flex justify-content-between mt-5">
+    <div class="left-menu" style="width: 20%;">
+        <h3 class="mb-3">Категории</h3>
+        <div class="categories d-flex flex-column justify-content-start pt-3" style="height: 90vh;">
+            <p class="text-black p-1 px-2 rounded bg-light text-center" style="background-color: #D9D9D9;">
+                <a href="{% url 'products' %}" class="btn text-black p-1 px-2 text-decoration-none w-100" style="font-size: 0.8rem;">Сите</a>
+            </p>
+            {% for category in categories %}
+                <p class="text-black p-1 px-2 rounded bg-light text-center">
+                    <a href="?category={{ category.name }}" class="btn text-decoration-none text-black p-1 px-2 {% if selected_category == category.name %}active{% endif %} w-100" style="font-size: 0.8rem;">{{ category.name }}</a>
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="content mt-5" style="width: 80%;">
+        <div class="products d-flex flex-wrap w-100 h-auto justify-content-center mt-3">
+            {% if page_obj %}
+                {% for product in page_obj %}
+                    {% if product.is_approved is True %}
+                    <div class="card text-center mx-2 my-2" style="width: 16rem;">
+                        {% if product.image %}
+                            <div style="height: 12rem; display: flex; align-items: center; justify-content: center;">
+                                <img src="{{ MEDIA_URL }}{{ product.image.url }}" class="card-img-top w-100 h-100" alt="Product Image">
+                            </div>
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">
+                                На залиха:
+                                {% if product.stock < 1 %}
+                                    <span style="color: red;">Нема залиха</span>
+                                {% else %}
+                                    {{ product.stock }}
+                                {% endif %}
+                            </p>
+                            <div class="mt-auto d-flex flex-column justify-content-center">
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'detailproductinfo' id=product.id %}" class="btn btn-sm btn-secondary w-100">Види повеќе</a>
+                                    {% if user.is_superuser or user == product.seller %}
+                                        <a href="{% url 'editproduct' id=product.id %}" class="btn btn-success btn-sm w-100 mt-2">Измени производ</a>
+                                        <form action="{% url 'delete_product' pk=product.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn btn-danger btn-sm w-100 mt-2">Избриши производ</button>
+                                        </form>
+                                    {% endif %}
+                                    {% if product.stock == 0 and request.user.is_superuser == 'false' %}
+                                        <button class="btn btn-sm btn-primary w-100 mt-2" disabled>Додади во кошничка</button>
+                                    {% else %}
+                                        {% if customuser.role.role == "Купувач" %}
+                                            <form method="post" action="{% url 'add_to_cart' product_id=product.id %}" class="mt-2">
+                                                {% csrf_token %}
+                                                <button class="btn btn-sm btn-primary w-100">Додади во кошничка</button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-sm btn-secondary w-100">Најави се за да додадеш во кошничка</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p>No products available.</p>
+            {% endif %}
+        </div>
+
+<nav aria-label="..." class="mt-5 d-flex align-items-center justify-content-center">
+        <ul class="pagination mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active" aria-current="page">
+                <span class="page-link">{{ num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    </div>
+</div>
+
+{% endblock %}

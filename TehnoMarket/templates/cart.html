@@ -1,0 +1,80 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<script>
+    function updateQuantity(itemId) {
+        var quantityInput = document.getElementById('quantity_' + itemId);
+        var notification = document.getElementById('notification_' + itemId);
+        var stock = {{ item.product.stock }};
+
+        if (parseInt(quantityInput.value) > stock) {
+            notification.textContent = 'Quantity exceeds available stock.';
+            event.preventDefault();
+        } else {
+            notification.textContent = '';
+        }
+    }
+</script>
+
+<div class="container">
+      {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+          {% if message.tags == 'error-type' %} class="{{ message.tags }}"{% endif %}{{ message }}
+        </div>
+    {% endfor %}
+
+
+    <h2 class="text-center my-4">Купувачка кошничка</h2>
+
+    {% if cart_items %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Продукт</th>
+                <th>Цена</th>
+                <th>Количина</th>
+                <th>Вкупно за производ</th>
+                <th>Вкупно</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+<tr>
+    <td>{{ item.product.name }}</td>
+    <td>${{ item.product.price }}</td>
+    <td>
+        <form action="{% url 'update_quantity' item.id %}" method="post" class="d-flex align-items-center">
+            {% csrf_token %}
+            <input type="number" id="quantity_{{ item.id }}" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control mr-2" style="width: 60px;">
+            <button id="update_{{ item.id }}" type="submit" class="btn btn-primary btn-sm">Промени</button>
+        </form>
+        <div id="notification_{{ item.id }}" class="text-danger mt-1"></div>
+    </td>
+    <td>${{ item.subtotal }}</td>
+    <td>
+        <form action="{% url 'delete_item_cart' item.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Избриши</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="font-weight-bold">Total:</td>
+                <td colspan="2" class="font-weight-bold">${{ total_price }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a href="{% url 'selectpaymentmethod' %}" id="platiButton" class="btn btn-primary">Плати</a>
+
+    {% else %}
+    <p class="text-center">Нема продукти за прикажување.</p>
+    {% endif %}
+
+    <div id="notification" class="mt-3"></div>
+</div>
+{% endblock %}

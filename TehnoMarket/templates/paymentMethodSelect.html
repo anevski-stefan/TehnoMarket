@@ -1,0 +1,97 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let dodadi_platezen_metod = document.querySelector('#dodadi_platezen_metod');
+    let select_payment_method = document.querySelector('#select_payment_method');
+    let platezen_metod_form = document.querySelector('#platezen_metod_form');
+    let select_method_select = document.querySelector('#select_method_select');
+    let naplati = document.querySelector('#naplati-btn');
+    let zacuvaj = document.querySelector('#zacuvaj-btn');
+    let izberi_text = document.querySelector('#izberi_text');
+
+    if (select_method_select.options.length === 0) {
+      select_method_select.style.display = "none";
+      naplati.style.display = "none";
+      izberi_text.style.display = "none";
+    }
+
+    dodadi_platezen_metod.onclick = function(event) {
+      event.preventDefault();
+      select_payment_method.style.display = "none";
+      platezen_metod_form.classList.remove("d-none");
+    };
+
+    zacuvaj.onclick = function(event) {
+      select_method_select.style.display = "block";
+      naplati.style.display = "block";
+      izberi_text.style.display = "block";
+    };
+  });
+</script>
+
+<div class="container">
+  <h3 class="text-center mt-4">Листа на избрани продукти:</h3>
+  {% if cart_items %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Производ</th>
+        <th>Квантитет</th>
+        <th>Цена</th>
+        <th>Вкупно за производот</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart_items %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.price }}</td>
+        <td>{{ item.subtotal|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h5 class="text-center mb-5">Вкупно: {{ total_price }}</h5>
+  {% else %}
+  <p class="text-center">Кошничката е празна.</p>
+  {% endif %}
+
+  <div class="text-center mb-4" id="select_payment_method">
+    <h3 class="select-heading" id="izberi_text">Избери плаќачки метод:</h3>
+    <div class="d-flex flex-column align-items-center">
+      <form action="{% url 'saveorder' %}" method="post">
+        {% csrf_token %}
+        <select name="payment_method" class="form-control" id="select_method_select">
+          {% for method in payment_methods %}
+          <option value="{{ method.id }}">{{ method.name_owner }} - {{ method.card_number }}</option>
+          {% endfor %}
+        </select>
+        {% if cart_items %}
+        <div class="d-flex align-items-center justify-content-center" id="naplati_div">
+          <button type="submit" class="btn btn-md btn-light mt-3" id="naplati-btn">Наплати</button>
+        </div>
+        {% endif %}
+        <div class="d-flex align-items-center justify-content-center">
+          <button type="submit" class="btn btn-md btn-light mt-3" id="dodadi_platezen_metod">Додади платежен метод</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="d-flex align-items-center flex-column d-none" id="platezen_metod_form">
+    <h3 class="select-heading text-center mb-4">Внесување на информации за платежен метод:</h3>
+    <form action="{% url 'selectpaymentmethod' %}" method="post" class="w-25">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="w-100 d-flex justify-content-center">
+        <button class="btn btn-light mt-3" type="submit" id="zacuvaj_btn">Зачувај</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
