@@ -1,59 +1,60 @@
 
-# Техно Маркет - Електронска продавница за компјутери и компјутерски компоненти
-Добредојдовте во Техно Маркет, Django апликација за електронска продавница со фокус на компјутери и компјутерски компоненти. Оваа апликација има два типа на корисници, купувачи и продавачи, да се регистрираат и нарачуваат производи, како и да додаваат нови производи за продажба.
+# Techno Market - An online store for computers and computer components.
+Welcome to Techno Market, a Django application for an online store focused on computers and computer components. This application has two types of users, buyers and sellers, who can register, order products, and also add new products for sale.
 
-Линк до live верзија на апликацијата: https://stefananevski.pythonanywhere.com/
-## Карактеристики
+Link to the live version of the application: https://stefananevski.pythonanywhere.com/
+## Features
 
-* Регистрација и автентикација за купувачи и продавачи.
-* Купувачите можат да прегледуваат список на производи и да ги додадат во својата кошничка.
-* Купувачите можат да направат нарачка.
-* Продавачите можат да додаваат нови производи за продажба.
-* Администраторот има контрола над корисниците и производите.
+* Registration and authentication for both buyers and sellers.
+* Buyers can browse a list of products and add them to their cart.
+* Buyers can place orders.
+* Sellers can add new products for sale.
+* The administrator has control over users and products.
 
 
-## Инсталација
+## Installation
 
-1. Клонирајте го репозиториумот на вашиот локален систем:
+1. Clone the repository to your local system:
 
 ```bash
     git clone https://github.com/anevski-stefan/TehnoMarket
     cd TehnoMarket
 ```
 
-2. Инсталирајте ги зависностите:
+2. Install the dependencies:
 
 ```bash
     pip install -r requirements.txt
 ```
     
-3. Стартувајте го серверот:
+3. Start the server:
 
 ```bash
     python manage.py runserver
 ```   
 
-4. Отворете ја апликацијата во вашиот прелистувач:
+4. Open the application in your browser:
 
 ```bash
     http://127.0.0.1:8000/
 ```   
-## Кориснички упатства
+## User Instructions:
 
-Логирајте се во администраторскиот дел преку следниот линк:
+Log in to the admin panel using the following link:
 
 ```bash
     http://127.0.0.1:8000/admin/
 ```
 
-Користете ги следните податоци за најавување како администратор:
-* Корисничко име: admin
-* Лозинка: admin
+Use the following credentials to log in as an administrator:
 
-Во администраторскиот дел можете да доделувате права и управувате со корисниците и производите.
+* Username: admin
+* Password: admin
 
-За да регистрирате нови корисници, користете го линкот "Најава/Регистрација" на почетната страна.
+In the admin panel, you can assign permissions and manage users and products.
 
-Користете ги линковите на сајтот за преглед и нарачување на производи.
+To register new users, use the "Login/Registration" link on the homepage.
+
+Use the links on the site to browse and order products.
 
 
